@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework import permissions, generics, status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -6,10 +6,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from member.permissions import ObjectIsRequestUser
-from .models import User
+
 from .serializers import UserSerializer, UserCreationSerializer, UserLoginSerializer
 
-
+User = get_user_model()
 class UserLogin(APIView):
     permission_classes = (AllowAny,)
 
