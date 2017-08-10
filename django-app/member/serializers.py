@@ -16,9 +16,9 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'pk',
+            'email',
             'nickname',
             'img_profile',
-            'email',
         )
     def create(self, validated_data):
         password = validated_data.pop('password','')
