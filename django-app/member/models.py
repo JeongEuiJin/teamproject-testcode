@@ -7,61 +7,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
-#
-# class PlotUserManager(BaseUserManager):
-#     use_in_migrations = True
-#
-#     def _create_user(self, email, password, **extra_fields):
-#         """
-#         Creates and saves a User with the given email and password.
-#         """
-#         if not email:
-#             raise ValueError('The given email must be set')
-#         email = self.normalize_email(email)
-#         user = self.model(email=email, **extra_fields)
-#         user.set_password(password)
-#         user.save(using=self._db)
-#         return user
-#
-#     def create_user(self, email, nickname, user_img=None, password=None):
-#         user = User(email=email,nickname=nickname)
-#         user.set_password(password)
-#         user.save()
-#
-#         return user
-#
-#     def create_superuser(self, email, nickname, password):
-#         user = User(email=email,nickname=nickname)
-#         user.set_password(password)
-#         user.is_staff = True
-#         user.is_superuser = True
-#         user.is_active = True
-#
-#         user.save()
-#
-#         return user
-#
-#
-# class User(AbstractBaseUser, PermissionsMixin):
-#
-#     nickname = models.CharField(max_length=24, null=True)
-#     email = models.EmailField(unique=True)
-#     img_profile = models.ImageField(
-#         upload_to='user',
-#         blank=True,
-#     )
-#     is_staff = models.BooleanField(default=False)
-#     is_superuser = models.BooleanField(default=False)
-#     is_active = models.BooleanField(default=False)
-#
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = ['nickname']
-#
-#     objects = PlotUserManager()
-#
-#     def get_short_name(self):
-#         return self.nickname
-
 from django.contrib.auth.base_user import BaseUserManager
 
 
@@ -95,12 +40,29 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
 
+    def create_facebook_user(self, user_info):
+        self.create_user(
+            email='{}@facebook.com'.format(user_info['id']),
+            username=user_info['id'],
+            nickname=user_info['id'],
+            first_name=user_info.get('first_name', ''),
+            last_name=user_info.get('last_name', ''),
+            img_profile=user_info['picture']['data']['url'],
+            user_type=User.USER_TYPE_FACEBOOK
+        )
+
 
 class User(AbstractBaseUser, PermissionsMixin):
+    USER_TYPE_DJANGO = 'django'
+    USER_TYPE_FACEBOOK = 'facebook'
+    CHOICES_USER_TYPE = (
+        (USER_TYPE_DJANGO, 'Django'),
+        (USER_TYPE_FACEBOOK, 'Facebook'),
+    )
     username = models.CharField(max_length=20)
     nickname = models.CharField(max_length=20)
     email = models.EmailField(_('email address'), unique=True)
-    img_profile = models.ImageField(upload_to='user/', null=True, blank=True)
+    img_profile = models.ImageField(upload_to='user/', null=True, blank=True, default='defult_img/profiledefault.png')
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -114,6 +76,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+
+    user_type = models.CharField(max_length=20, choices=CHOICES_USER_TYPE, default=USER_TYPE_DJANGO)
+
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -134,3 +99,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
