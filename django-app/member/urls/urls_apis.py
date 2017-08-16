@@ -1,7 +1,7 @@
 from django.conf.urls import url
-from rest_framework.authtoken import views
 
-from .. import apis
+
+from member import apis
 
 urlpatterns = [
     url(r'^userlist/$', apis.UserListCreateView.as_view(),name='member_userlist'),
@@ -12,5 +12,4 @@ urlpatterns = [
     url(r'^info/$', apis.UserDetailView.as_view()),
     url(r'^facebook-login/$', apis.FacebookLoginAPIView.as_view()),
     url(r'^token-user-info/$', apis.TokenUserInfoAPIView.as_view()),
-    # url(r'^login1/$', views.ObtainAuthToken.as_view(), name='user-login'),
 ]

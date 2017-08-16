@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class PostList(models.Model):
+class Post(models.Model):
     GRADE_CHOICES = (
         (0, '전체관람가'),
         (12, '12세이상 관람가'),
@@ -20,3 +20,7 @@ class PostList(models.Model):
     time = models.TimeField(help_text='HH:MM')
     date_start = models.DateField(help_text='YYYY-MM-DD')
     date_end = models.DateField(help_text='YYYY-MM-DD')
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created',)

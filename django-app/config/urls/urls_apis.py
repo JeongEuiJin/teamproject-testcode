@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^member/', include('member.urls.urls_apis')),
+    url(r'^post/', include('post.urls.urls_apis')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

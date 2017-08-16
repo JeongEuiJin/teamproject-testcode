@@ -1,21 +1,18 @@
 import requests
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
-
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import IntegrityError
 from rest_framework import permissions, generics, status
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import authentication_classes
 from rest_framework.exceptions import APIException
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import logout as django_logout
-from member.permissions import ObjectIsRequestUser
+# from ..utilt.permissions import ObjectIsRequestUser
 from django.utils.translation import ugettext_lazy as _
 
+from utilt.permissions import ObjectIsRequestUser
 from .serializers import UserSerializer, UserCreationSerializer, UserLoginSerializer
 
 User = get_user_model()
