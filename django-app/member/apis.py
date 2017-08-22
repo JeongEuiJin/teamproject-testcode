@@ -1,24 +1,28 @@
 import requests
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from rest_framework import permissions, generics, status
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import authentication_classes
 from rest_framework.exceptions import APIException
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import logout as django_logout
-# from ..utilt.permissions import ObjectIsRequestUser
+from utilt.permissions import ObjectIsRequestUser
 from django.utils.translation import ugettext_lazy as _
 
-from utilt.permissions import ObjectIsRequestUser
 from .serializers import UserSerializer, UserCreationSerializer, UserLoginSerializer
 
 User = get_user_model()
 
 
 class TokenUserInfoAPIView(APIView):
+    permission_classes = (AllowAny,)
     def post(self, request):
         token_string = request.data.get('token')
         try:
@@ -41,7 +45,11 @@ class UserLogin(APIView):
         if plot_user:
             token = Token.objects.get_or_create(user=plot_user)[0]
             pk = plot_user.id
-            return Response({"pk": pk, "token": token.key}, status=status.HTTP_200_OK)
+            nick_name = plot_user.nickname
+            return Response({"pk": pk,
+                             "nick_name": nick_name,
+                             "token": token.key,
+                             }, status=status.HTTP_200_OK)
         return Response({"error": "아이디 혹은 비밀번호가 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 

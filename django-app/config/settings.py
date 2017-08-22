@@ -55,7 +55,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
 
@@ -145,9 +146,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 
 # Facebook
-FACEBOOK_APP_ID = '513769212288943'
-FACEBOOK_SECRET_CODE = '785045f5966383a4417f92f58fba2d58'
+FACEBOOK_APP_ID = '114314212557003'
+FACEBOOK_SECRET_CODE=''
 
 CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
+    'localhost:8000',
+    'localhost:8080',
+    'plot.ejjeong.com',
 )
